@@ -23,8 +23,28 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ExpandableCard, type CardItem } from "@/components/expandable-card"
 
+// TypeScript interfaces
+interface ExperienceItem {
+  company?: string
+  position?: string
+  duration?: string
+  period?: string
+  title?: string
+  institution?: string
+  description: string
+  technologies?: string[]
+  achievements?: string[]
+}
+
+interface ExperienceCardProps {
+  item: ExperienceItem
+  index: number
+  isLeft?: boolean
+  experience: ExperienceItem[]
+}
+
 // Custom hook for typewriter effect
-const useTypewriter = (text, speed = 100) => {
+const useTypewriter = (text: string, speed: number = 100) => {
   const [displayText, setDisplayText] = useState("")
 
   useEffect(() => {
@@ -47,13 +67,13 @@ const useTypewriter = (text, speed = 100) => {
 }
 
 // Card with 3D effect
-const Card3D = ({ children, className, onClick }) => {
-  const cardRef = useRef(null)
+const Card3D = ({ children, className, onClick }: { children: React.ReactNode; className?: string; onClick?: () => void }) => {
+  const cardRef = useRef<HTMLDivElement>(null)
   const [rotateX, setRotateX] = useState(0)
   const [rotateY, setRotateY] = useState(0)
   const [scale, setScale] = useState(1)
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return
     const card = cardRef.current
     const rect = cardRef.current.getBoundingClientRect()
@@ -86,7 +106,7 @@ const Card3D = ({ children, className, onClick }) => {
       onClick={onClick}
       style={{
         transform: `rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(${scale})`,
-        transformStyle: "preserve_3d",
+        transformStyle: "preserve-3d",
       }}
     >
       {children}
@@ -95,8 +115,8 @@ const Card3D = ({ children, className, onClick }) => {
 }
 
 // Timeline Item Component with scroll animation
-const TimelineItem = ({ children, index, isLeft = false }) => {
-  const ref = useRef(null)
+const TimelineItem = ({ children, index, isLeft = false }: { children: React.ReactNode; index: number; isLeft?: boolean }) => {
+  const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: false, amount: 0.3 })
 
   return (
@@ -113,15 +133,15 @@ const TimelineItem = ({ children, index, isLeft = false }) => {
 }
 
 // Experience Card Component with modal functionality
-const ExperienceCard = ({ item, index, isLeft = false, experience }) => {
+const ExperienceCard = ({ item, index, isLeft = false, experience }: ExperienceCardProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const cardRef = useRef(null)
-  const ref = useRef(null)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: false, amount: 0.3 })
   const scrollPositionRef = useRef(0)
 
   // Handle opening the modal
-  const openModal = (e) => {
+  const openModal = (e: React.MouseEvent) => {
     e.preventDefault()
     e.stopPropagation()
 
@@ -153,13 +173,13 @@ const ExperienceCard = ({ item, index, isLeft = false, experience }) => {
 
   // Handle click outside to close
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (cardRef.current && !cardRef.current.contains(event.target)) {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (cardRef.current && !cardRef.current.contains(event.target as Node)) {
         closeModal()
       }
     }
 
-    const handleEscKey = (event) => {
+    const handleEscKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isModalOpen) {
         closeModal()
       }
@@ -225,7 +245,7 @@ const ExperienceCard = ({ item, index, isLeft = false, experience }) => {
 
         <Card3D
           className="flex-1 bg-white/5 backdrop-blur-sm border border-white/10 cursor-pointer"
-          onClick={openModal}
+          onClick={() => openModal({} as React.MouseEvent)}
         >
           <CardContent className="p-6">
             <Badge className="mb-2 bg-indigo-500/10 text-indigo-500 hover:bg-white hover:text-black transition-all duration-300 rounded-lg relative group overflow-hidden cursor-pointer">
@@ -293,7 +313,7 @@ const ExperienceCard = ({ item, index, isLeft = false, experience }) => {
                 <div className="mt-8 pt-8 border-t border-white/10">
                   <h4 className="text-lg font-semibold mb-3 text-white">Key Achievements</h4>
                   <ul className="space-y-2 text-gray-200">
-                    {item.achievements?.map((achievement, idx) => (
+                    {item.achievements?.map((achievement: string, idx: number) => (
                       <li key={idx} className="flex items-start gap-2">
                         <div className="w-2 h-2 rounded-full bg-cyan-500 mt-2"></div>
                         <span>{achievement}</span>
@@ -332,7 +352,7 @@ export default function PortfolioV2() {
   }
 
   // Handle form input changes
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { id, value } = e.target
     setFormData(prev => ({
       ...prev,
@@ -341,7 +361,7 @@ export default function PortfolioV2() {
   }
 
   // Handle form submission
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
 
