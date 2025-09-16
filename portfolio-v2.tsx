@@ -401,6 +401,19 @@ export default function PortfolioV2() {
     }
   }
 
+  // Smooth scroll to section
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId)
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start' 
+      })
+      setActiveSection(sectionId)
+      setMobileMenuOpen(false)
+    }
+  }
+
   // Change active section based on scroll
   useEffect(() => {
     const handleScroll = () => {
@@ -569,25 +582,28 @@ export default function PortfolioV2() {
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/10 backdrop-blur-md border-b border-white/10 rounded-b-lg">
         <div className="container mx-auto px-4 flex justify-between items-center h-16">
-          <motion.div
-            className="flex items-center gap-2"
+          <motion.button
+            className="flex items-center gap-2 cursor-pointer"
+            onClick={() => scrollToSection('home')}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
           >
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 flex items-center justify-center text-white font-bold relative group">
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 blur-sm opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative">VC</span>
             </div>
-            <span className="font-bold text-xl hidden sm:block">Vinit Chawda</span>
-          </motion.div>
+            <span className="font-bold text-xl hidden sm:block hover:text-cyan-400 transition-colors duration-300">Vinit Chawda</span>
+          </motion.button>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-1">
             {navItems.map((item, index) => (
-              <motion.a
+              <motion.button
                 key={item.id}
-                href={`#${item.id}`}
+                onClick={() => scrollToSection(item.id)}
                 className={`px-4 py-2 rounded-lg transition-all duration-300 ${
                   activeSection === item.id
                     ? "bg-white/10 text-cyan-500 shadow-[0_0_10px_rgba(34,211,238,0.3)]"
@@ -599,8 +615,11 @@ export default function PortfolioV2() {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
-                {item.label}
-              </motion.a>
+                <div className="flex items-center gap-2">
+                  {item.icon}
+                  <span>{item.label}</span>
+                </div>
+              </motion.button>
             ))}
           </nav>
 
@@ -633,22 +652,22 @@ export default function PortfolioV2() {
           >
             <nav className="container mx-auto px-4 py-8 flex flex-col gap-4">
               {navItems.map((item, index) => (
-                <motion.a
+                <motion.button
                   key={item.id}
-                  href={`#${item.id}`}
+                  onClick={() => scrollToSection(item.id)}
                   className="flex items-center justify-between p-4 rounded-xl border border-white/10 backdrop-blur-sm"
-                  onClick={() => setMobileMenuOpen(false)}
                   initial={{ opacity: 0, x: -50 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.3, delay: index * 0.1 }}
                   whileHover={{ x: 5, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <div className="flex items-center gap-3">
                     <div className="p-2 rounded-lg bg-white/10">{item.icon}</div>
                     <span className="font-medium">{item.label}</span>
                   </div>
                   <ChevronRight size={20} className="text-cyan-400" />
-                </motion.a>
+                </motion.button>
               ))}
             </nav>
           </motion.div>
