@@ -595,7 +595,7 @@ export default function PortfolioV2() {
               <div className="absolute inset-0 rounded-full bg-gradient-to-br from-cyan-400 to-purple-600 blur-sm opacity-75 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span className="relative">VC</span>
             </div>
-            <span className="font-bold text-xl hidden sm:block hover:text-cyan-400 transition-colors duration-300">Vinit Chawda</span>
+            <span className="font-bold text-lg sm:text-xl hover:text-cyan-400 transition-colors duration-300">Vinit Chawda</span>
           </motion.button>
 
           {/* Desktop Navigation */}
