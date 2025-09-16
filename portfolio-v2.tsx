@@ -467,7 +467,7 @@ export default function PortfolioV2() {
       longDescription:
         "Developed end-to-end in just 6 hours using vibe coding, showcasing rapid prototyping and execution skills. Built a semantic search and AI-powered recommendation system processing 7,700+ transcript segments with FAISS vector search and BERT embeddings. Delivered personalized health insights from Huberman Lab content, integrating OpenAI/OpenRouter, Prometheus monitoring, and CI/CD with Jenkins.",
       technologies: ["FastAPI", "Streamlit", "FAISS", "Sentence Transformers", "Docker", "Jenkins"],
-      src: "/placeholder.svg?height=200&width=350",
+      src: "/hubermanhealthaiassitant.png",
       github: "https://github.com/VinitChawda06",
       demo: "#",
     },
@@ -477,7 +477,7 @@ export default function PortfolioV2() {
       longDescription:
         "Built an AI-powered document analysis tool achieving 90% contextual accuracy for business intelligence. The system supports business intelligence use cases, providing actionable insights from structured and unstructured data. This project demonstrates my ability to work with advanced NLP technologies and create practical solutions for document processing and analysis.",
       technologies: ["LangChain", "ChromaDB", "Python", "NLP"],
-      src: "/placeholder.svg?height=200&width=350",
+      src: "/docinsightengine.png",
       github: "https://github.com/VinitChawda06",
       demo: "#",
     },
@@ -487,7 +487,7 @@ export default function PortfolioV2() {
       longDescription:
         "Developed a face-recognition based attendance system with 95% accuracy, automating reports and saving 180+ manual hours annually. The system is integrated with automated Excel sheet generation, demonstrating expertise in computer vision and automation. This project showcases my ability to create practical solutions that streamline processes in educational and corporate environments.",
       technologies: ["OpenCV", "Face Recognition", "Python", "Excel Automation"],
-      src: "/placeholder.svg?height=200&width=350",
+      src: "/attendease.png",
       github: "https://github.com/VinitChawda06",
       demo: "#",
     },
