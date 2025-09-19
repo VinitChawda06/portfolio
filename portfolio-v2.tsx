@@ -340,6 +340,10 @@ export default function PortfolioV2() {
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [submitStatus, setSubmitStatus] = useState<{
+    type: 'success' | 'error' | null;
+    message: string;
+  }>({ type: null, message: '' })
 
   // Function to download CV
   const downloadCV = () => {
@@ -364,32 +368,41 @@ export default function PortfolioV2() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setIsSubmitting(true)
+    setSubmitStatus({ type: null, message: '' })
 
     try {
-      // Using EmailJS for form submission - replace with your EmailJS service details
-      const response = await fetch("mailto:vinitchawda20@gmail.com", {
+      // Create FormData for Web3Forms
+      const formDataToSend = new FormData()
+      formDataToSend.append('access_key', '7647bc7f-8f30-467b-80b3-5c41be02f9ac') // TODO: Replace with your actual Web3Forms access key
+      formDataToSend.append('name', formData.name)
+      formDataToSend.append('email', formData.email)
+      formDataToSend.append('subject', formData.subject)
+      formDataToSend.append('message', formData.message)
+
+      const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          subject: formData.subject,
-          message: formData.message,
-        }),
+        body: formDataToSend
       })
 
-      // For now, we'll create a mailto link as fallback
-      const mailtoLink = `mailto:vinitchawda20@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
-        `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
-      )}`
-      
-      window.location.href = mailtoLink
-      alert("Opening your default email client...")
-      setFormData({ name: "", email: "", subject: "", message: "" })
+      const result = await response.json()
+
+      if (result.success) {
+        setSubmitStatus({
+          type: 'success',
+          message: 'Thank you for reaching out! Your message has been sent successfully.'
+        })
+        // Reset form
+        setFormData({ name: "", email: "", subject: "", message: "" })
+      } else {
+        throw new Error(result.message || 'Something went wrong')
+      }
     } catch (error) {
       console.error("Error sending message:", error)
+      setSubmitStatus({
+        type: 'error',
+        message: 'Failed to send message. Please try again or contact me directly.'
+      })
+      
       // Fallback to mailto link
       const mailtoLink = `mailto:vinitchawda20@gmail.com?subject=${encodeURIComponent(formData.subject)}&body=${encodeURIComponent(
         `Name: ${formData.name}\nEmail: ${formData.email}\n\nMessage:\n${formData.message}`
@@ -433,6 +446,17 @@ export default function PortfolioV2() {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  // Auto-dismiss status messages
+  useEffect(() => {
+    if (submitStatus.type) {
+      const timer = setTimeout(() => {
+        setSubmitStatus({ type: null, message: '' })
+      }, 5000) // Clear message after 5 seconds
+
+      return () => clearTimeout(timer)
+    }
+  }, [submitStatus.type])
 
   const navItems = [
     { id: "home", label: "Home", icon: <Code size={18} /> },
@@ -1348,8 +1372,8 @@ export default function PortfolioV2() {
                 <span className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-500 to-purple-600 opacity-0 group-hover:opacity-30 blur-sm transition-opacity duration-300"></span>
                 <span className="relative">Contact</span>
               </Badge>
-              <h2 className="text-3xl font-bold mb-4 text-white">Let's Talk</h2>
-              <p className="text-gray-300">Interested in working together or have a question?</p>
+              <h2 className="text-3xl font-bold mb-4 text-white">Get In Touch</h2>
+              <p className="text-gray-300">I'm currently open to new opportunities - feel free to reach out with any relevant roles or just to say hello!</p>
             </motion.div>
 
             <motion.div
@@ -1361,6 +1385,20 @@ export default function PortfolioV2() {
             >
               <Card3D className="overflow-hidden bg-white/5 backdrop-blur-sm border border-white/10 rounded-xl max-w-2xl mx-auto">
                 <div className="p-8">
+                  {/* Status Message */}
+                  {submitStatus.type && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`mb-6 p-4 rounded-lg border ${
+                        submitStatus.type === 'success'
+                          ? 'bg-green-500/10 border-green-500/20 text-green-400'
+                          : 'bg-red-500/10 border-red-500/20 text-red-400'
+                      }`}
+                    >
+                      {submitStatus.message}
+                    </motion.div>
+                  )}
                     <form className="space-y-6" onSubmit={handleSubmit}>
                       <div className="relative">
                         <motion.input
