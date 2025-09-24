@@ -46,20 +46,34 @@ interface ExperienceCardProps {
 // Custom hook for typewriter effect
 const useTypewriter = (text: string, speed: number = 100) => {
   const [displayText, setDisplayText] = useState("")
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
+    // Clear any existing timeout
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
+    }
+    
+    // Reset display text when text changes
+    setDisplayText("")
+    
     let i = 0
-    const typingInterval = setInterval(() => {
+    
+    const typeNextCharacter = () => {
       if (i < text.length) {
-        setDisplayText((prev) => prev + text.charAt(i))
+        setDisplayText(text.substring(0, i + 1))
         i++
-      } else {
-        clearInterval(typingInterval)
+        timeoutRef.current = setTimeout(typeNextCharacter, speed)
       }
-    }, speed)
+    }
+    
+    // Start typing after a small delay
+    timeoutRef.current = setTimeout(typeNextCharacter, speed)
 
     return () => {
-      clearInterval(typingInterval)
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current)
+      }
     }
   }, [text, speed])
 
@@ -346,13 +360,29 @@ export default function PortfolioV2() {
   }>({ type: null, message: '' })
 
   // Function to download CV
-  const downloadCV = () => {
-    const link = document.createElement("a")
-    link.href = "/Vinit_Chawda_Resume.pdf"
-    link.download = "Vinit_Chawda_Resume.pdf"
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+  const downloadCV = async () => {
+    try {
+      // Check if the file exists first
+      const response = await fetch("/Vinit_Chawda.pdf", { method: 'HEAD' })
+      
+      if (response.ok) {
+        const link = document.createElement("a")
+        link.href = "/Vinit_Chawda.pdf"
+        link.download = "Vinit_Chawda_Resume.pdf"
+        link.target = "_blank"
+        document.body.appendChild(link)
+        link.click()
+        document.body.removeChild(link)
+      } else {
+        // File doesn't exist, show user-friendly message
+        alert("Resume is currently being updated. Please contact me directly at vinitchawda20@gmail.com for my latest resume.")
+      }
+    } catch (error) {
+      console.error("Error downloading resume:", error)
+      // Fallback: open email with request for resume
+      const mailtoLink = `mailto:vinitchawda20@gmail.com?subject=Resume Request&body=Hi Vinit, I would like to request your latest resume. Thank you!`
+      window.open(mailtoLink, '_blank')
+    }
   }
 
   // Handle form input changes
@@ -749,8 +779,8 @@ export default function PortfolioV2() {
                   transition={{ duration: 0.5, delay: 0.5 }}
                 >
                   <span className="text-xl md:text-2xl text-gray-200 leading-relaxed">
-                    {useTypewriter("Bu ilding AI-driven applications and multi-agent architectures.")}
-                    <span className="animate-pulse">|</span>
+                    {useTypewriter("Building AI-driven applications and multi-agent architectures.", 80)}
+                    <span className="animate-pulse text-cyan-400">|</span>
                   </span>
                 </motion.div>
                 <motion.p
